@@ -1,0 +1,24 @@
+[project]
+name = "llm-pgg"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "requests",
+    "pydantic",
+    "pyyaml",
+    "pandas",
+    "matplotlib",
+    "tqdm",
+    "scipy",
+    "tomli>=2.4.1 ; python_full_version < '3.11'",
+    "transformers>=4.57.6",
+    "torch>=2.8.0",
+    "huggingface-hub>=0.36.2",
+    "statsmodels>=0.14",
+    "scikit-learn>=1.4",
+    "vllm==0.24.0 ; python_full_version >= '3.10'",
+    "mistral-common==1.11.5 ; python_full_version >= '3.10'",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

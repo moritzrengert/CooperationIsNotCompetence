@@ -1,0 +1,275 @@
+sweep:
+  name: ors_2022_open_models_full_fixed_5rep
+  game: ro_public_good
+  mechanisms:
+  - vcm
+  - sccm
+  - ccm
+  prompt_style: paper
+  prompt_modifier: none
+  reason_style: none
+  temperature: 0.7
+  seed: 42
+  max_tokens: 768
+  response_format_mode: json_object
+  timeout: 180
+  treatments:
+  - RESTART
+  repetitions: 5
+  chains_per_treatment: 4
+  generations_per_chain: 60
+  players_per_generation: 5
+  parallel_players: true
+  player_workers: 5
+  chain_workers: 4
+  show_generation: false
+  output_root: outputs/ors_2022_main
+  generated_config_dir: outputs/generated_configs
+  fixed_player_ablations:
+    counts:
+    - 1
+    - 2
+    - 3
+    policies:
+    - always_cooperate
+    - always_free_ride
+vllm_defaults:
+  host: 127.0.0.1
+  port: 8000
+  dtype: bfloat16
+  max_model_len: 8192
+  gpu_memory_utilization: 0.9
+  model_snapshot_root: model_snapshots
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+models:
+- slug: gpt_oss_120b
+  served_model_name: gpt-oss-120b
+  model_id: openai/gpt-oss-120b
+  smoke_mode: chat
+  vendor: OpenAI
+  country_or_region: US
+  size_class: 120B MoE
+  max_model_len: 8192
+  max_tokens: 2048
+  gpu_memory_utilization: 0.92
+  timeout: 900
+  json_response_format: false
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - openai_gptoss
+- slug: nemotron_3_super_fp8
+  served_model_name: nemotron-3-super-fp8
+  model_id: nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8
+  vendor: NVIDIA
+  country_or_region: US
+  size_class: 120B MoE / 12B active FP8
+  max_model_len: 4096
+  max_tokens: 2048
+  gpu_memory_utilization: 0.9
+  timeout: 600
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --max-num-seqs
+  - '512'
+  - --moe-backend
+  - triton
+  - --reasoning-parser
+  - nemotron_v3
+- slug: gpt_oss_20b
+  served_model_name: gpt-oss-20b
+  model_id: openai/gpt-oss-20b
+  vendor: OpenAI
+  country_or_region: US
+  size_class: 20B MoE
+  smoke_mode: chat
+  max_tokens: 2048
+  timeout: 600
+  json_response_format: false
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - openai_gptoss
+- slug: qwen3_32b
+  served_model_name: qwen3-32b
+  model_id: Qwen/Qwen3-32B
+  vendor: Alibaba Qwen
+  country_or_region: China
+  size_class: 32B dense
+  max_tokens: 2048
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - qwen3
+  variants:
+  - slug: qwen3_32b_thinking
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: true
+  - slug: qwen3_32b_nonthinking
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: false
+- slug: qwen3_30b_a3b
+  served_model_name: qwen3-30b-a3b
+  model_id: Qwen/Qwen3-30B-A3B
+  vendor: Alibaba Qwen
+  country_or_region: China
+  size_class: 30B MoE, 3B active
+  max_tokens: 2048
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - qwen3
+  variants:
+  - slug: qwen3_30b_a3b_thinking
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: true
+  - slug: qwen3_30b_a3b_nonthinking
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: false
+- slug: qwq_32b
+  served_model_name: qwq-32b
+  model_id: Qwen/QwQ-32B
+  vendor: Alibaba Qwen
+  country_or_region: China
+  size_class: 32B reasoning
+  max_tokens: 2048
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - deepseek_r1
+- slug: deepseek_r1_distill_qwen_32b
+  served_model_name: deepseek-r1-distill-qwen-32b
+  model_id: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
+  vendor: DeepSeek
+  country_or_region: China
+  size_class: 32B reasoning distilled
+  max_tokens: 2048
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - deepseek_r1
+- slug: deepseek_r1_distill_llama_70b_fp8
+  served_model_name: deepseek-r1-distill-llama-70b-fp8
+  model_id: neuralmagic/DeepSeek-R1-Distill-Llama-70B-FP8-dynamic
+  vendor: DeepSeek and Neural Magic
+  country_or_region: China
+  size_class: 70B reasoning distilled FP8
+  max_model_len: 4096
+  max_tokens: 2048
+  gpu_memory_utilization: 0.92
+  response_format_mode: json_schema
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - deepseek_r1
+- slug: llama_3_3_70b_instruct_fp8
+  served_model_name: llama-3.3-70b-instruct-fp8
+  model_id: nvidia/Llama-3.3-70B-Instruct-FP8
+  vendor: Meta and NVIDIA
+  country_or_region: US
+  size_class: 70B FP8
+  max_model_len: 4096
+  gpu_memory_utilization: 0.92
+- slug: mistral_small_3_2_24b
+  served_model_name: mistral-small-3.2-24b
+  model_id: mistralai/Mistral-Small-3.2-24B-Instruct-2506
+  vendor: Mistral AI
+  country_or_region: France and EU
+  size_class: 24B dense
+  smoke_mode: completion
+  json_response_format: false
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --tokenizer-mode
+  - mistral
+  - --config-format
+  - mistral
+  - --skip-mm-profiling
+  - --limit-mm-per-prompt
+  - '{"image": 0}'
+- slug: devstral_small_2505
+  served_model_name: devstral-small-2505
+  model_id: mistralai/Devstral-Small-2505
+  vendor: Mistral AI
+  country_or_region: France and EU
+  size_class: 24B coding and agentic
+  smoke_mode: completion
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --tokenizer-mode
+  - mistral
+- slug: gemma_3_27b_it
+  served_model_name: gemma-3-27b-it
+  model_id: google/gemma-3-27b-it
+  vendor: Google
+  country_or_region: US
+  size_class: 27B dense
+  max_model_len: 4096
+  gpu_memory_utilization: 0.88
+- slug: aya_expanse_32b
+  served_model_name: aya-expanse-32b
+  model_id: CohereForAI/aya-expanse-32b
+  vendor: Cohere For AI
+  country_or_region: Canada
+  size_class: 32B multilingual
+  max_model_len: 4096
+  gpu_memory_utilization: 0.88
+- slug: phi_4_reasoning_plus
+  served_model_name: phi-4-reasoning-plus
+  model_id: microsoft/Phi-4-reasoning-plus
+  vendor: Microsoft
+  country_or_region: US
+  size_class: 14B dense
+  max_tokens: 2048
+  response_format_mode: json_schema
+  vllm_args:
+  - --enable-prefix-caching
+  - --tensor-parallel-size
+  - '2'
+  - --disable-custom-all-reduce
+  - --reasoning-parser
+  - deepseek_r1
+- slug: granite_3_3_8b_instruct
+  served_model_name: granite-3.3-8b-instruct
+  model_id: ibm-granite/granite-3.3-8b-instruct
+  vendor: IBM
+  country_or_region: US
+  size_class: 8B dense

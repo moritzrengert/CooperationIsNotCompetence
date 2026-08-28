@@ -1,0 +1,15 @@
+gpt_oss_120b
+nemotron_3_super_fp8
+gpt_oss_20b
+qwen3_32b
+qwen3_30b_a3b
+qwq_32b
+deepseek_r1_distill_qwen_32b
+deepseek_r1_distill_llama_70b_fp8
+llama_3_3_70b_instruct_fp8
+mistral_small_3_2_24b
+devstral_small_2505
+gemma_3_27b_it
+aya_expanse_32b
+phi_4_reasoning_plus
+granite_3_3_8b_instruct
